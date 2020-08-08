@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+source ./src/display
+source ./src/execution
+source ./src/strings
+source ./src/files

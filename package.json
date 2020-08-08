@@ -1,0 +1,20 @@
+{
+    "name": "mmb-bash-helpers",
+    "version": "1.0.0",
+    "description": "Bash helpers",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/marcmascort/bash-helpers.git"
+    },
+    "keywords": [
+        "bash",
+        "helpers"
+    ],
+    "author": "Marc Mascort",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/marcmascort/bash-helpers/issues"
+    },
+    "homepage": "https://github.com/marcmascort/bash-helpers#readme"
+  }
+  

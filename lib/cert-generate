@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Import helpers functions
+source ../helpers
+
+HOSTNAME=$1
+if [ -z "${HOSTNAME}" ]
+then
+    die "Hostname argument is required"
+fi
+
+CERT_FOLDER=$2
+if [ -z "${CERT_FOLDER}" ]
+then
+    die "Folder argument is required"
+fi
+
+OPENSSL_CONF_FILE=$3
+if [ -z "${OPENSSL_CONF_FILE}" ]
+then
+    die "Openssl configuration file argument is required"
+fi
+
+export CERT_HOSTNAME=${HOSTNAME}
+
+highlight "> "
+text "Generaton CA for "
+highlight "${HOSTNAME}"
+text " at "
+highlight "${CERT_FOLDER}"
+text " ... \n"
+
+try openssl req -x509 -nodes -days 3650 -newkey rsa:4096 \
+    -reqexts SAN -extensions v3_ca \
+    -subj "/C=ES/ST=Barcelona/L=Barcelona/O=T4XI/CN=${HOSTNAME}/emailAddress=soporte@t4xi.com" \
+    -config ${OPENSSL_CONF_FILE} \
+    -passin env:CERT_HOSTNAME \
+    -keyout ${CERT_FOLDER}/${HOSTNAME}.key \
+    -out ${CERT_FOLDER}/${HOSTNAME}.crt;
+
+success "OK\n"
+
+highlight "> Verifying ... \n"
+openssl x509 -in ${CERT_FOLDER}/${HOSTNAME}.crt -noout -text
+success "OK\n"

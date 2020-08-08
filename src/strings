@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+function str_replace() {
+    if [ -z "${1}" ]
+    then
+        die "Search argument is required"
+    fi
+    if [ -z "${2}" ]
+    then
+        die "Replace argument is required"
+    fi
+    if [ -z "${3}" ]
+    then
+        die "Subject argument is required"
+    fi
+    local STR=${3/$1/$2}
+    echo "${STR}"
+}

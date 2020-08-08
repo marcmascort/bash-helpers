@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# Import helpers functions
+source ../helpers
+
+ETC_HOSTS=/etc/hosts
+HOSTNAME=$2
+IP=${3:-"127.0.0.1"}
+HOST_REGEX="\(\s\+\)${HOSTNAME}\s*$"
+
+function checkHostnameArg() {
+    if [ -z "${HOSTNAME}" ]
+    then
+        die "Hostname argument is required"
+    fi
+}
+
+function remove() {
+    checkHostnameArg
+
+    highlight "> "
+    text "Removing "
+    highlight "${HOSTNAME}"
+    text " from your "
+    highlight "${ETC_HOSTS}"
+    text " ... "
+
+    if [ -n "$(grep -e ${HOST_REGEX} ${ETC_HOSTS})" ]
+    then
+        try sudo sed -ie "/[[:space:]]${HOSTNAME}/d" ${ETC_HOSTS}
+        if [ -n "$(grep -e ${HOST_REGEX} ${ETC_HOSTS})" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+function add() {
+    checkHostnameArg
+    
+    highlight "> "
+    text "Adding "
+    highlight "${HOSTNAME}"
+    text " to your "
+    highlight "${ETC_HOSTS}"
+    text " ... "
+
+    if [ -z "$(grep -e ${HOST_REGEX} ${ETC_HOSTS})" ]
+    then
+        try printf "%s\t%s\n" "${IP}" "${HOSTNAME}" | sudo tee -a ${ETC_HOSTS} > /dev/null
+        if [ -z "$(grep -e ${HOST_REGEX} ${ETC_HOSTS})" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+# Execute
+case $1 in
+    add) add ;;
+    remove) remove ;;
+    *)
+        title "AVAILABLE METHODS"
+
+        highlight " > ";
+        text "add"
+        warning " <HOSTNAME>"
+        highlight " [<IP>]"
+        text "\n"
+
+        highlight " > ";
+        text "remove"
+        warning " <HOSTNAME>"
+        text "\n"
+
+        echo ""
+    ;;
+esac

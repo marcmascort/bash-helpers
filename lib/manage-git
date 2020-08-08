@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# Import helpers functions
+source ../helpers
+
+
+function clone() {
+    local GIT_REPO=${1}
+    local GIT_REPO_FOLDER=${2}
+    local GIT_REPO_BRANCH=${3:-"master"}
+
+    if [ -z "${GIT_REPO}" ]
+    then
+        die "Git repository argument is required"
+    fi
+    if [ -z "${GIT_REPO_FOLDER}" ]
+    then
+        die "Target folder argument is required"
+    fi
+
+    highlight "> "
+    text "Cloning "
+    highlight "${GIT_REPO}"
+    text " @ "
+    highlight "${GIT_REPO_BRANCH}"
+    text " into "
+    highlight "${GIT_REPO_FOLDER}"
+    text " ... \n"
+
+    if [ -d "${GIT_REPO_FOLDER}" ] && [ "$(ls -A ${GIT_REPO_FOLDER})" ]
+    then
+        warning "SKIP\n"
+    else
+        try git clone ${GIT_REPO} ${GIT_REPO_FOLDER} -b ${GIT_REPO_BRANCH}
+        success "OK\n"
+    fi
+}
+
+function submodule() {
+    highlight "> "
+    text "Submodule "
+    highlight "${*}"
+    text " ... \n"
+
+    try git submodule ${*}
+    success "OK\n"
+}
+
+
+# Execute
+case $1 in
+    clone) clone ${*:2} ;;
+    submodule) submodule ${*:2} ;;
+    *)
+        title "AVAILABLE METHODS"
+
+        highlight " > ";
+        text "clone"
+        warning " <REPOSITORY> <FOLDER>"
+        highlight " [<BRANCH>]"
+        text "\n"
+
+        highlight " > ";
+        text "submodule"
+        warning " <ARGUMENTS>"
+        text "\n"
+
+        echo ""
+    ;;
+esac

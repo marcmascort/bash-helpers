@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+
+make_executable () {
+    if [ -z "${1}" ]
+    then
+        die "File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Making executable "
+    highlight "${1}"
+    text " ... "
+
+    if [ ! -x "${1}" ]
+    then
+        try chmod +x ${1}
+        if [ ! -x "${1}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+make_writable () {
+    if [ -z "${1}" ]
+    then
+        die "File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Making writable "
+    highlight "${1}"
+    text " ... "
+    
+    if [ ! -w "${1}" ]
+    then
+        try chmod +w ${1}
+        if [ ! -w "${1}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+make_readable () {
+    if [ -z "${1}" ]
+    then
+        die "File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Making readable "
+    highlight "${1}"
+    text " ... "
+    
+    if [ ! -r "${1}" ]
+    then
+        try chmod +r ${1}
+        if [ ! -r "${1}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+make_chmod () {
+    if [ -z "${1}" ]
+    then
+        die "Modes argument is required"
+    fi
+    if [ -z "${2}" ]
+    then
+        die "File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Applying modes "
+    highlight "${1}"
+    text " to "
+    highlight "${2}"
+    text " ... "
+    
+    try chmod ${1} ${2}
+    success "OK\n"
+}
+
+make_mkdir () {
+    if [ -z "${1}" ]
+    then
+        die "Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Creating folder "
+    highlight "${1}"
+    text " ... "
+
+    if [ ! -d "${1}" ]
+    then
+        try mkdir ${1}
+        if [ ! -d "${1}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+make_mv () {
+    if [ -z "${1}" ]
+    then
+        die "Source File/Folder argument is required"
+    fi
+    if [ -z "${2}" ]
+    then
+        die "Target File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Moving "
+    highlight "${1}"
+    text " to "
+    highlight "${2}"
+    text " ... "
+
+    if [ ! -f "${1}" ] && [ ! -d "${1}" ]
+    then
+        die "Source File/Folder dosen't exists"
+    fi
+
+    if [ ! -f "${2}" ] && [ ! -d "${2}" ]
+    then
+        try mv ${1} ${2}
+        if [ ! -f "${2}" ] && [ ! -d "${2}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+make_cp () {
+    if [ -z "${1}" ]
+    then
+        die "Source File/Folder argument is required"
+    fi
+    if [ -z "${2}" ]
+    then
+        die "Target File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Copying "
+    highlight "${1}"
+    text " to "
+    highlight "${2}"
+    text " ... "
+
+    if [ ! -f "${1}" ] && [ ! -d "${1}" ]
+    then
+        die "Source File/Folder dosen't exists"
+    fi
+
+    if [ ! -f "${2}" ] && [ ! -d "${2}" ]
+    then
+        try cp ${1} ${2}
+        if [ ! -f "${2}" ] && [ ! -d "${2}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+}
+
+function make_rm() {
+    if [ -z "${1}" ]
+    then
+        die "Target File/Folder argument is required"
+    fi
+
+    highlight "> "
+    text "Removing "
+    highlight "${1}"
+    text " ... "
+
+    if [ -f "${1}" ] || [ -d "${1}" ]
+    then
+        if [ -f "${1}" ]
+        then
+            try rm -f ${1}
+        elif [ -d "${1}" ]
+        then
+            try rm -rf ${1}
+        fi
+        if [ -f "${1}" ] || [ -d "${1}" ]
+        then
+            error "FAIL\n"
+            exit 1
+        else
+            success "OK\n"
+        fi
+    else
+        warning "SKIP\n"
+    fi
+
+}

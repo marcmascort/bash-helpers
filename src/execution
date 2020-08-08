@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+die() {
+    echo ""
+    yell "$*"
+    echo ""
+    exit 1
+}
+try() {
+    "$@" || die "cannot $*";
+}
