@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source ./src/display
-source ./src/execution
-source ./src/strings
-source ./src/files
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source ${DIR}/src/display
+source ${DIR}/src/execution
+source ${DIR}/src/strings
+source ${DIR}/src/files

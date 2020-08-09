@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Import helpers functions
-source ../helpers
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source ${DIR}/../helpers
 
 HOSTNAME=$1
 if [ -z "${HOSTNAME}" ]
